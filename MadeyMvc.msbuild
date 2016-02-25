@@ -22,6 +22,6 @@
 	<Target Name="prepare-deploy-package" DependsOnTargets="package; prepare-deploy-parameters"/>
 	
 	<Target Name="deploy-package" DependsOnTargets="prepare-deploy-parameters">
-		<Exec Command='$(DeployCommandPath) /Y /M:"$(PublishUrl)/MSDeploy.axd?Site=$(SiteName)" /P:$(DeployPassword) /U:$(DeployUser) -allowUntrusted /a:basic'/>
+		<Exec Command='$(DeployCommandPath) /Y "/M:$(PublishUrl)/MSDeploy.axd?Site=$(SiteName)" /P:$(DeployPassword) /U:$(DeployUser) -allowUntrusted /a:basic'/>
 	</Target>
 </Project>
