@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<Target Name="clean">
+        <MSBuild Projects="MadeyMvc.sln" Properties="Configuration=Release" Targets="Clean" />
+    </Target>
+	
+	<Target Name="package" DependsOnTargets="clean;">
+        <MSBuild Projects="MadeyMvc\MadeyMvc.csproj" Properties="Configuration=Release" Targets="Package" />
+    </Target>
+	
+	<Target Name="prepare-deploy-parameters">
+		<PropertyGroup>
+            <SetParametersFile>MadeyMvc\obj\Release\Package\MadeyMvc.SetParameters.xml</SetParametersFile>
+            <XPath>/parameters/setParameter[@name='IIS Web Application Name']/@value</XPath>
+        </PropertyGroup>
+
+		<XmlPoke XmlInputPath="$(SetParametersFile)" 
+             Query="$(Xpath)" 
+             Value="$(SiteName)"/> 
+	</Target>
+	
+	<Target Name="prepare-deploy-package" DependsOnTargets="package; prepare-deploy-parameters"/>
+	
+	<Target Name="deploy-package" DependsOnTargets="prepare-deploy-parameters">
+		<Exec Command='$(DeployCommandPath) /Y "/M:$(PublishUrl)/MSDeploy.axd?Site=$(SiteName)" /P:"$(DeployPassword)" /U:$(DeployUser) -allowUntrusted /a:basic'/>
+	</Target>
+</Project>
