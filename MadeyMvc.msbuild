@@ -6,7 +6,7 @@
 	
 	<Target Name="package" DependsOnTargets="clean;">
         <MSBuild Projects="MadeyMvc\MadeyMvc.csproj" Properties="Configuration=Release" Targets="Package" />
-		<RemoveDir Directories="MadeyMvc\obj\Release\Package\PackageTmp"/>
+		<RemoveDir Directories="$(DeployCommandPath)\PackageTmp"/>
     </Target>
 	
 	<Target Name="prepare-deploy-parameters">
