@@ -15,7 +15,7 @@ namespace MadeyMvc.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page 5.";
+            ViewBag.Message = "Your application description page 7.";
 
             return View();
         }
