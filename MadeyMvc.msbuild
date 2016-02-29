@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup>
+		<TeamCityBuild>false</TeamCityBuild>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(TEAMCITY_BUILD_PROPERTIES_FILE)' != ''">
+		<TeamCityBuild>true</TeamCityBuild>
+	</PropertyGroup>
+	
 	<Target Name="clean">
         <MSBuild Projects="MadeyMvc.sln" Properties="Configuration=Release" Targets="Clean" />
     </Target>
@@ -24,5 +33,12 @@
 	
 	<Target Name="deploy-package" DependsOnTargets="prepare-deploy-parameters">
 		<Exec Command='$(DeployCommandPath)\MadeyMvc.deploy.cmd /Y "/M:$(PublishUrl)/MSDeploy.axd?Site=$(SiteName)" /P:$(DeployPassword) /U:$(DeployUser) -allowUntrusted /a:basic'/>
+	</Target>
+	
+	<Target Name="TeamCity" AfterTargets="package" Condition=" '$(TeamCityBuild)'=='true'">
+		<GetAssemblyIdentity AssemblyFiles="MadeyMvc\obj\Release\MadeyMvc.dll">
+			<Output TaskParameter="Assemblies" ItemName="AssemblyIdentity" />
+		</GetAssemblyIdentity>
+		<Message Text="##teamcity[buildNumber '%(AssemblyIdentity.Version)']" />
 	</Target>
 </Project>
